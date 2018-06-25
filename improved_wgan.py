@@ -348,6 +348,8 @@ for epoch in range(100):
     np.random.shuffle(X_train)
     print("Epoch: ", epoch)
     print("Number of batches: ", int(X_train.shape[0] // BATCH_SIZE))
+    print("generator_loss="+str(generator_loss[-1]))
+    print("discriminator_loss="+str(discriminator_loss[-1]))
     discriminator_loss = []
     generator_loss = []
     minibatches_size = BATCH_SIZE * TRAINING_RATIO
@@ -359,8 +361,8 @@ for epoch in range(100):
             # print(noise.shape)
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch, noise],
                                                                          [positive_y, negative_y, dummy_y]))
-            print(discriminator_loss[-1])
+            
         generator_loss.append(generator_model.train_on_batch(np.random.rand(BATCH_SIZE,28,28,1), positive_y))
-        print(generator_loss[-1])
+        
     # Still needs some code to display losses from the generator and discriminator, progress bars, etc.
     generate_images(generator, args.output_dir, epoch)
