@@ -348,10 +348,11 @@ for epoch in range(100):
     np.random.shuffle(X_train)
     print("Epoch: ", epoch)
     print("Number of batches: ", int(X_train.shape[0] // BATCH_SIZE))
-    print("generator_loss="+str(generator_loss[-1]))
-    print("discriminator_loss="+str(discriminator_loss[-1]))
     discriminator_loss = []
     generator_loss = []
+    print("generator_loss="+str(generator_loss[-1]))
+    print("discriminator_loss="+str(discriminator_loss[-1]))
+
     minibatches_size = BATCH_SIZE * TRAINING_RATIO
     for i in range(int(X_train.shape[0] // (BATCH_SIZE * TRAINING_RATIO))):
         discriminator_minibatches = X_train[i * minibatches_size:(i + 1) * minibatches_size]
