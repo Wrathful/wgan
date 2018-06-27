@@ -24,7 +24,7 @@ from train_gen import Gen
 from keras.models import *
 from keras.layers import *
 from keras.models import Model, Sequential
-from keras.layers import Input, Dense, Reshape, Flatten
+from keras.layers import Input, Dense, Reshape, Flatten, Dropout
 from keras.layers.merge import _Merge
 from keras.layers.convolutional import Convolution2D, Conv2DTranspose
 from keras.layers.normalization import BatchNormalization
@@ -215,7 +215,8 @@ def make_discriminator():
     model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', padding='same', strides=[2, 2]))
     model.add(LeakyReLU())
     model.add(Flatten())
-    model.add(Dense(1024, kernel_initializer='he_normal'))
+    model.add(Dropout(0.5))
+    model.add(Dense(256, kernel_initializer='he_normal'))
     model.add(LeakyReLU())
     model.add(Dense(1, kernel_initializer='he_normal'))
     return model
