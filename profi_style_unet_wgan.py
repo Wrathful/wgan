@@ -166,7 +166,7 @@ def make_generator():
 
     ch, cw = get_crop_shape(inputs, conv9)
     conv9 = layers.ZeroPadding2D(padding=((ch[0], ch[1]), (cw[0], cw[1])))(conv9)
-    conv10 = layers.Conv2D(1, (1, 1))(conv9)
+    conv10 = layers.Conv2D(3, (1, 1))(conv9)
 
     model = Model(inputs=inputs, outputs=conv10)
     # model = Sequential()
