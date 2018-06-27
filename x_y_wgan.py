@@ -18,6 +18,7 @@ The model saves images using pillow. If you don't have pillow, either install it
 import argparse
 import os
 import numpy as np
+import keras
 from keras.models import Model, Sequential
 from keras.layers import Input, Dense, Reshape, Flatten
 from keras.layers.merge import _Merge
@@ -189,6 +190,9 @@ if K.image_data_format() == 'channels_first':
 else:
     X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], X_train.shape[2], 1))
 X_train = (X_train.astype(np.float32) - 127.5) / 127.5
+y_train = keras.utils.to_categorical(y_train, 10)
+y_test = keras.utils.to_categorical(y_test, 10)
+
 
 # Now we initialize the generator and discriminator.
 generator = make_generator()
@@ -279,7 +283,8 @@ for epoch in range(500):
         for j in range(TRAINING_RATIO):
             image_batch = discriminator_minibatches[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             image_batch_y = discriminator_minibatches_y[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
-            #noise = np.random.rand(BATCH_SIZE, 10).astype(np.float32)
+            noise = np.random.rand(BATCH_SIZE, 10).astype(np.float32)
+
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch, image_batch_y],
                                                                          [positive_y, negative_y, dummy_y]))
         generator_loss.append(generator_model.train_on_batch(discriminator_minibatches_y, positive_y_batch_ratio))
