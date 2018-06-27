@@ -23,22 +23,23 @@ class Gen:
 			for i in range(1, len(file)):
 				self.files.append([file[0], file[i]])
 		random.seed(1337)
-		random.shuffle(self.files)			
+		random.shuffle(self.files)		
+		self.j = 0	
 
 	def get_epoch(self, batch_size, is_training = True):
 		x_batch = []
 		y_batch = []
 
 		if is_training:
-			for j in range(	0, int(len(self.files) * 0.8) // batch_size ):	
-				x_batch.append([])
-				y_batch.append([])
-				
-				for i in range(0, batch_size):
-					X = cv2.imread(self.x_folder + self.files[j * batch_size + i][1])
-					Y = cv2.imread(self.y_folder + self.files[j * batch_size + i][0])
-					x_batch[j].append(X)
-					y_batch[j].append(Y)
+			for i in range(batch_size):
+				X = cv2.imread(self.x_folder + self.files[j * batch_size + i][1])
+				Y = cv2.imread(self.y_folder + self.files[j * batch_size + i][0])
+				x_batch.append(X)
+				y_batch.append(Y)
+			self.j +=1
+			
+			if self.j > len(self.files) // batch_size:
+				self.j=0
 		else:
 			for j in range(	int(len(self.files) * 0.8) // batch_size , len(self.files) // batch_size ):	
 				x_batch.append([])
