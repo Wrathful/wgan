@@ -206,9 +206,9 @@ def make_discriminator():
     Note that the improved WGAN paper suggests that BatchNormalization should not be used in the discriminator."""
     model = Sequential()
     if K.image_data_format() == 'channels_first':
-        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(1, 28, 28)))
+        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(3, 512, 512)))
     else:
-        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(28, 28, 1)))
+        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(512, 512, 3)))
     model.add(LeakyReLU())
     model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(LeakyReLU())
@@ -258,7 +258,6 @@ args = parser.parse_args()
 
 # First we load the image data, reshape it and normalize it to the range [-1, 1]
 #(X_train, y_train), (X_test, y_test) = mnist.load_data()
-)
 
 #X_train = np.concatenate((X_train, X_test), axis=0)
 # if K.image_data_format() == 'channels_first':
