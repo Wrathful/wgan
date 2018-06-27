@@ -216,7 +216,7 @@ def make_discriminator():
     model.add(LeakyReLU())
     model.add(Dropout(0.5))
     model.add(Flatten())
-    model.add(Dense(256, kernel_initializer='he_normal'))
+    model.add(Dense(32, kernel_initializer='he_normal'))
     model.add(LeakyReLU())
     model.add(Dense(1, kernel_initializer='he_normal'))
     return model
