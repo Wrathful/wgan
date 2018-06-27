@@ -266,7 +266,8 @@ args = parser.parse_args()
 #     X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], X_train.shape[2], 1))
 X_train, y_train = gen.get_epoch(BATCH_SIZE)
 print(X_train.shape)
-X_train, y_train = np.array(X_train), np.array(y_train)
+X_train = np.array(X_train)
+y_train = np.array(y_train)
 X_train = (X_train.astype(np.float32) - 127.5) / 127.5
 y_train = (y_train.astype(np.float32) - 127.5) / 127.5
 
