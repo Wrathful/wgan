@@ -32,12 +32,12 @@ class Gen:
 
 		if is_training:
 			for i in range(batch_size):
-				X = cv2.imread(self.x_folder + self.files[j * batch_size + i][1])
-				Y = cv2.imread(self.y_folder + self.files[j * batch_size + i][0])
+				X = cv2.imread(self.x_folder + self.files[self.j * batch_size + i][1])
+				Y = cv2.imread(self.y_folder + self.files[self.j * batch_size + i][0])
 				x_batch.append(X)
 				y_batch.append(Y)
 			self.j +=1
-			
+
 			if self.j > len(self.files) // batch_size:
 				self.j=0
 		else:
