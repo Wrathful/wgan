@@ -258,15 +258,17 @@ args = parser.parse_args()
 
 # First we load the image data, reshape it and normalize it to the range [-1, 1]
 #(X_train, y_train), (X_test, y_test) = mnist.load_data()
-X_train, y_train = gen.get_epoch(BATCH_SIZE)
-
+)
 
 #X_train = np.concatenate((X_train, X_test), axis=0)
 # if K.image_data_format() == 'channels_first':
 #     X_train = X_train.reshape((X_train.shape[0], 1, X_train.shape[1], X_train.shape[2]))
 # else:
 #     X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], X_train.shape[2], 1))
+X_train, y_train = gen.get_epoch(BATCH_SIZE)
+X_train, y_train = np.array(X_train), np.array(y_train)
 X_train = (X_train.astype(np.float32) - 127.5) / 127.5
+y_train = (y_train.astype(np.float32) - 127.5) / 127.5
 
 # Now we initialize the generator and discriminator.
 generator = make_generator()
@@ -354,6 +356,9 @@ for epoch in range(300):
     minibatches_size = BATCH_SIZE * TRAINING_RATIO
     for i in range(int(32 // (BATCH_SIZE * TRAINING_RATIO))):
         X_train, y_train = gen.get_epoch(BATCH_SIZE)
+        X_train, y_train = np.array(X_train), np.array(y_train)
+        X_train = (X_train.astype(np.float32) - 127.5) / 127.5
+        y_train = (y_train.astype(np.float32) - 127.5) / 127.5
         discriminator_minibatches_x = X_train[i * minibatches_size:(i + 1) * minibatches_size]
         discriminator_minibatches_y = y_train[i * minibatches_size:(i + 1) * minibatches_size]
         for j in range(TRAINING_RATIO):
