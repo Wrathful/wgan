@@ -94,7 +94,7 @@ def make_generator():
     """Creates a generator model that takes a 100-dimensional noise vector as a "seed", and outputs images
     of size 28x28x1."""
     model = Sequential()
-    model.add(Dense(1024, input_dim=100))
+    model.add(Dense(1024, input_dim=10))
     model.add(LeakyReLU())
     model.add(Dense(128 * 7 * 7))
     model.add(BatchNormalization())
@@ -167,7 +167,7 @@ class RandomWeightedAverage(_Merge):
 
 def generate_images(generator_model, output_dir, epoch):
     """Feeds random seeds into the generator and tiles and saves the output to a PNG file."""
-    test_image_stack = generator_model.predict(np.random.rand(10, 100))
+    test_image_stack = generator_model.predict(np.random.rand(10, 10))
     test_image_stack = (test_image_stack * 127.5) + 127.5
     test_image_stack = np.squeeze(np.round(test_image_stack).astype(np.uint8))
     tiled_output = tile_images(test_image_stack)
@@ -201,7 +201,7 @@ discriminator = make_discriminator()
 for layer in discriminator.layers:
     layer.trainable = False
 discriminator.trainable = False
-generator_input = Input(shape=(100,))
+generator_input = Input(shape=(10,))
 generator_layers = generator(generator_input)
 discriminator_layers_for_generator = discriminator(generator_layers)
 generator_model = Model(inputs=[generator_input], outputs=[discriminator_layers_for_generator])
@@ -221,7 +221,7 @@ generator.trainable = False
 # are then run through the discriminator. Although we could concatenate the real and generated images into a
 # single tensor, we don't (see model compilation for why).
 real_samples = Input(shape=X_train.shape[1:])
-generator_input_for_discriminator = Input(shape=(100,))
+generator_input_for_discriminator = Input(shape=(10,))
 generated_samples_for_discriminator = generator(generator_input_for_discriminator)
 discriminator_output_from_generator = discriminator(generated_samples_for_discriminator)
 discriminator_output_from_real_samples = discriminator(real_samples)
@@ -275,9 +275,9 @@ for epoch in range(500):
         discriminator_minibatches = X_train[i * minibatches_size:(i + 1) * minibatches_size]
         for j in range(TRAINING_RATIO):
             image_batch = discriminator_minibatches[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
-            noise = np.random.rand(BATCH_SIZE, 100).astype(np.float32)
+            noise = np.random.rand(BATCH_SIZE, 10).astype(np.float32)
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch, noise],
                                                                          [positive_y, negative_y, dummy_y]))
-        generator_loss.append(generator_model.train_on_batch(np.random.rand(BATCH_SIZE, 100), positive_y))
+        generator_loss.append(generator_model.train_on_batch(np.random.rand(BATCH_SIZE, 10), positive_y))
     # Still needs some code to display losses from the generator and discriminator, progress bars, etc.
     generate_images(generator, args.output_dir, epoch)
