@@ -343,18 +343,18 @@ discriminator_model.compile(optimizer=Adam(0.0001, beta_1=0.5, beta_2=0.9),
 # We make three label vectors for training. positive_y is the label vector for real samples, with value 1.
 # negative_y is the label vector for generated samples, with value -1. The dummy_y vector is passed to the
 # gradient_penalty loss function and is not used.
+minibatches_size = BATCH_SIZE * TRAINING_RATIO
 positive_y = np.ones((BATCH_SIZE, 1), dtype=np.float32)
 negative_y = -positive_y
 dummy_y = np.zeros((BATCH_SIZE, 1), dtype=np.float32)
-
+positive_y_generator_train = np.ones((minibatches_size, 1), dtype=np.float32)
 for epoch in range(300):
     np.random.shuffle(X_train)
     print("Epoch: ", epoch)
     print("Number of batches: ", int(X_train.shape[0] // BATCH_SIZE))
     discriminator_loss = []
     generator_loss = []
-
-    minibatches_size = BATCH_SIZE * TRAINING_RATIO
+    
     for i in range(int(32 // (BATCH_SIZE * TRAINING_RATIO))):
         X_train, y_train = gen.get_epoch(minibatches_size)
         X_train = np.array(X_train)
@@ -362,11 +362,11 @@ for epoch in range(300):
         X_train = (X_train.astype(np.float32) - 127.5) / 127.5
         y_train = (y_train.astype(np.float32) - 127.5) / 127.5
         print("X_train.shape")
-        print(X_train.shape,y_train.shape,positive_y.shape,negative_y.shape,dummy_y.shape)
+        print(X_train.shape,y_train.shape)
         discriminator_minibatches_x = X_train[i * minibatches_size:(i + 1) * minibatches_size]
         discriminator_minibatches_y = y_train[i * minibatches_size:(i + 1) * minibatches_size]
         print("discriminator_minibatches_x.shape")
-        print(discriminator_minibatches_x.shape,discriminator_minibatches_y.shape,positive_y.shape,negative_y.shape,dummy_y.shape)
+        print(discriminator_minibatches_x.shape,discriminator_minibatches_y.shape)
         for j in range(TRAINING_RATIO):
             image_batch = discriminator_minibatches_x[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             image_batch_y = discriminator_minibatches_y[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
@@ -377,7 +377,7 @@ for epoch in range(300):
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch_y, image_batch],
                                                                          [positive_y, negative_y, dummy_y]))
             
-        generator_loss.append(generator_model.train_on_batch(discriminator_minibatches_x[0:minibatches_size], positive_y))
+        generator_loss.append(generator_model.train_on_batch(discriminator_minibatches_x[0:minibatches_size], positive_y_generator_train))
         
     # Still needs some code to display losses from the generator and discriminator, progress bars, etc.
     generate_images(generator, args.output_dir, epoch)
