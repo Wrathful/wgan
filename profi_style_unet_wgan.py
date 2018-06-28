@@ -247,11 +247,12 @@ def generate_images(generator_model, output_dir, epoch):
     print(image_y.shape)
     test_image_stack = generator_model.predict(image_y)
     test_image_stack = (test_image_stack * 127.5) + 127.5
-    test_image_stack = np.squeeze(np.round(test_image_stack).astype(np.uint8))
-    tiled_output = tile_images(test_image_stack)
-    tiled_output = Image.fromarray(tiled_output, mode='L')  # L specifies greyscale
-    outfile = os.path.join(output_dir, 'epoch_{}.png'.format(epoch))
-    tiled_output.save(outfile)
+    # test_image_stack = np.squeeze(np.round(test_image_stack).astype(np.uint8))
+    for z in range(len(test_image_stack)):
+        tiled_output = tile_images(test_image_stack)
+        tiled_output = Image.fromarray(tiled_output, mode='L')  # L specifies greyscale
+        outfile = os.path.join(output_dir, 'epoch_{}_{}.png'.format(epoch,z))
+        tiled_output.save(outfile)
 
 
 parser = argparse.ArgumentParser(description="Improved Wasserstein GAN implementation for Keras.")
