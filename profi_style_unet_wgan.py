@@ -24,7 +24,7 @@ from train_gen import Gen
 from keras.models import *
 from keras.layers import *
 from keras.models import Model, Sequential
-from keras.layers import Input, Dense, Reshape, Flatten, Dropout
+from keras.layers import Input, Dense, Reshape, Flatten, Dropout, GlobalAveragePooling2D
 from keras.layers.merge import _Merge
 from keras.layers.convolutional import Convolution2D, Conv2DTranspose
 from keras.layers.normalization import BatchNormalization
@@ -206,17 +206,16 @@ def make_discriminator():
     Note that the improved WGAN paper suggests that BatchNormalization should not be used in the discriminator."""
     model = Sequential()
     if K.image_data_format() == 'channels_first':
-        model.add(Convolution2D(32, (5, 5), padding='same', input_shape=(3, 512, 512)))
+        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(3, 512, 512)))
     else:
-        model.add(Convolution2D(32, (5, 5), padding='same', input_shape=(512, 512, 3)))
+        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(512, 512, 3)))
     model.add(LeakyReLU())
-    model.add(Convolution2D(64, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
+    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(LeakyReLU())
-    model.add(Convolution2D(64, (5, 5), kernel_initializer='he_normal', padding='same', strides=[2, 2]))
+    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', padding='same', strides=[2, 2]))
     model.add(LeakyReLU())
-    model.add(Dropout(0.5))
-    model.add(Flatten())
-    model.add(Dense(32, kernel_initializer='he_normal'))
+    model.add(GlobalAveragePooling2D())
+    model.add(Dense(1024, kernel_initializer='he_normal'))
     model.add(LeakyReLU())
     model.add(Dense(1, kernel_initializer='he_normal'))
     return model
@@ -369,6 +368,7 @@ for epoch in range(300):
             image_batch_y = discriminator_minibatches_y[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             #noise = np.random.rand(BATCH_SIZE, 512,512,3).astype(np.float32)
             # print(noise.shape)
+            print(image_batch.shape,image_batch_y.shape,positive_y.shape)
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch_y, image_batch],
                                                                          [positive_y, negative_y, dummy_y]))
             
