@@ -40,7 +40,7 @@ class Gen:
 			# print(self.j)
 			# print(x_batch)
 			# print(y_batch)
-			if self.j > len(self.files) // batch_size:
+			if self.j >= len(self.files) // batch_size:
 				self.j=0
 		else:
 			for j in range(	int(len(self.files) * 0.8) // batch_size , len(self.files) // batch_size ):	
