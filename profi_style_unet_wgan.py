@@ -303,8 +303,7 @@ generator.trainable = False
 # The noise seed is run through the generator model to get generated images. Both real and generated images
 # are then run through the discriminator. Although we could concatenate the real and generated images into a
 # single tensor, we don't (see model compilation for why).
-real_samples = Input(shape=X_train.shape[1:])
-print(X_train.shape[1:])
+real_samples = Input(shape=(512,512,3))
 generator_input_for_discriminator = Input(shape=(512,512,3))
 generated_samples_for_discriminator = generator(generator_input_for_discriminator)
 discriminator_output_from_generator = discriminator(generated_samples_for_discriminator)
@@ -357,8 +356,9 @@ for epoch in range(300):
 
     minibatches_size = BATCH_SIZE * TRAINING_RATIO
     for i in range(int(32 // (BATCH_SIZE * TRAINING_RATIO))):
-        X_train, y_train = gen.get_epoch(BATCH_SIZE)
-        X_train, y_train = np.array(X_train), np.array(y_train)
+        X_train, y_train = gen.get_epoch(BATCH_SIZE*TRAINING_RATIO)
+        X_train = np.array(X_train)
+        y_train = np.array(y_train)
         X_train = (X_train.astype(np.float32) - 127.5) / 127.5
         y_train = (y_train.astype(np.float32) - 127.5) / 127.5
         discriminator_minibatches_x = X_train[i * minibatches_size:(i + 1) * minibatches_size]
@@ -368,7 +368,7 @@ for epoch in range(300):
             image_batch_y = discriminator_minibatches_y[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             #noise = np.random.rand(BATCH_SIZE, 512,512,3).astype(np.float32)
             # print(noise.shape)
-            print(image_batch.shape,image_batch_y.shape,positive_y.shape)
+            print(image_batch.shape,image_batch_y.shape,positive_y.shape,negative_y.shape,dummy_y.shape)
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch_y, image_batch],
                                                                          [positive_y, negative_y, dummy_y]))
             
