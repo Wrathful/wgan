@@ -63,7 +63,7 @@ class Gen:
 			if isfile(f2):
 				files.append(f2)
 
-		print(files)
+		# print(files)
 		images = [None] * len(files)
 		for i in range(len(files)):
 			images[i] = cv2.resize(cv2.imread(files[i]), (512, 512))
