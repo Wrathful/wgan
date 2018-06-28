@@ -207,16 +207,16 @@ def make_discriminator():
     Note that the improved WGAN paper suggests that BatchNormalization should not be used in the discriminator."""
     model = Sequential()
     if K.image_data_format() == 'channels_first':
-        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(3, 512, 512)))
+        model.add(Convolution2D(32, (5, 5), padding='same', input_shape=(3, 512, 512)))
     else:
-        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(512, 512, 3)))
+        model.add(Convolution2D(32, (5, 5), padding='same', input_shape=(512, 512, 3)))
     model.add(LeakyReLU())
-    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
+    model.add(Convolution2D(64, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(LeakyReLU())
-    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', padding='same', strides=[2, 2]))
+    model.add(Convolution2D(64, (5, 5), kernel_initializer='he_normal', padding='same', strides=[2, 2]))
     model.add(LeakyReLU())
     model.add(GlobalAveragePooling2D())
-    model.add(Dense(1024, kernel_initializer='he_normal'))
+    model.add(Dense(32, kernel_initializer='he_normal'))
     model.add(LeakyReLU())
     model.add(Dense(1, kernel_initializer='he_normal'))
     return model
