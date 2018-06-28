@@ -42,7 +42,7 @@ except ImportError:
     exit()
 
 BATCH_SIZE = 5
-TRAINING_RATIO = 4  # The training ratio is the number of discriminator updates per generator update. The paper uses 5.
+TRAINING_RATIO = 2  # The training ratio is the number of discriminator updates per generator update. The paper uses 5.
 GRADIENT_PENALTY_WEIGHT = 10  # As per the paper
 gen = Gen('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','images/Y', 1, 512)
 
