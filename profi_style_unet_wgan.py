@@ -15,6 +15,7 @@ tested this with Theano at all.
 
 The model saves images using pillow. If you don't have pillow, either install it or remove the calls to generate_images.
 """
+import cv2
 import argparse
 import os
 import numpy as np
@@ -252,9 +253,10 @@ def generate_images(generator_model, output_dir, epoch):
         # test_image_stack = np.squeeze(np.round(test_image_stack).astype(np.uint8))
         #tiled_output = tile_images(test_image_stack)
         tiled_output= np.concatenate((image_y[z],test_image_stack[z]), axis=1)
-        tiled_output = Image.fromarray(tiled_output, mode='L')  # L specifies greyscale
+        #tiled_output = Image.fromarray(tiled_output, mode='L')  # L specifies greyscale
         outfile = os.path.join(output_dir, 'epoch_{}_{}.png'.format(epoch,z))
-        tiled_output.save(outfile)
+        cv2.imwrite(outfile,tiled_output)
+        #tiled_output.save(outfile)
 
 
 parser = argparse.ArgumentParser(description="Improved Wasserstein GAN implementation for Keras.")
