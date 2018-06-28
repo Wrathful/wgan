@@ -38,8 +38,8 @@ class Gen:
 				y_batch.append(Y)
 			self.j +=1
 			print(self.j)
-			print(x_batch)
-			print(y_batch)
+			# print(x_batch)
+			# print(y_batch)
 			if self.j > len(self.files) // batch_size:
 				self.j=0
 		else:
