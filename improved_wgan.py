@@ -276,6 +276,7 @@ for epoch in range(500):
         for j in range(TRAINING_RATIO):
             image_batch = discriminator_minibatches[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             noise = np.random.rand(BATCH_SIZE, 100).astype(np.float32)
+            print(image_batch.shape,noise.shape,positive_y.shape,negative_y.shape,dummy_y.shape)
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch, noise],
                                                                          [positive_y, negative_y, dummy_y]))
         generator_loss.append(generator_model.train_on_batch(np.random.rand(BATCH_SIZE, 100), positive_y))
