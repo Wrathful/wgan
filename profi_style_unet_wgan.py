@@ -43,7 +43,7 @@ except ImportError:
 BATCH_SIZE = 4
 TRAINING_RATIO = 2  # The training ratio is the number of discriminator updates per generator update. The paper uses 5.
 GRADIENT_PENALTY_WEIGHT = 10  # As per the paper
-gen = Gen('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','Y', 1, 512)
+gen = Gen('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','images/Y', 1, 512)
 
 def wasserstein_loss(y_true, y_pred):
     """Calculates the Wasserstein loss for a sample batch.
@@ -362,8 +362,8 @@ for epoch in range(500):
         y_train = np.array(y_train)
         X_train = (X_train.astype(np.float32) - 127.5) / 127.5
         y_train = (y_train.astype(np.float32) - 127.5) / 127.5
-        print("X_train.shape")
-        print(X_train.shape,y_train.shape)
+        # print("X_train.shape")
+        # print(X_train.shape,y_train.shape)
         # discriminator_minibatches_x = X_train[0:(i + 1) * minibatches_size]
         # discriminator_minibatches_y = y_train[i * minibatches_size:(i + 1) * minibatches_size]
         # print("discriminator_minibatches_x.shape")
@@ -373,8 +373,8 @@ for epoch in range(500):
             image_batch_y = y_train[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             #noise = np.random.rand(BATCH_SIZE, 512,512,3).astype(np.float32)
             # print(noise.shape)
-            print("image_batch.shape")
-            print(image_batch.shape,image_batch_y.shape,positive_y.shape,negative_y.shape,dummy_y.shape)
+            # print("image_batch.shape")
+            # print(image_batch.shape,image_batch_y.shape,positive_y.shape,negative_y.shape,dummy_y.shape)
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch_y, image_batch],
                                                                          [positive_y, negative_y, dummy_y]))
             
