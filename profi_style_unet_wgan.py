@@ -245,7 +245,7 @@ def generate_images(generator_model, output_dir, epoch):
     """Feeds random seeds into the generator and tiles and saves the output to a PNG file."""
     image_y=np.array(gen.get_test())
     print(image_y.shape)
-    test_image_stack = generator_model.predict(gen.get_test())
+    test_image_stack = generator_model.predict(image_y)
     test_image_stack = (test_image_stack * 127.5) + 127.5
     test_image_stack = np.squeeze(np.round(test_image_stack).astype(np.uint8))
     tiled_output = tile_images(test_image_stack)
