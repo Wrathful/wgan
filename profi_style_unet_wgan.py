@@ -207,16 +207,16 @@ def make_discriminator():
     Note that the improved WGAN paper suggests that BatchNormalization should not be used in the discriminator."""
     model = Sequential()
     if K.image_data_format() == 'channels_first':
-        model.add(Convolution2D(32, (5, 5), padding='same', input_shape=(3, 512, 512)))
+        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(3, 512, 512)))
     else:
-        model.add(Convolution2D(32, (5, 5), padding='same', input_shape=(512, 512, 3)))
+        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(512, 512, 3)))
     model.add(LeakyReLU())
-    model.add(Convolution2D(64, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
+    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(LeakyReLU())
-    model.add(Convolution2D(64, (5, 5), kernel_initializer='he_normal', padding='same', strides=[2, 2]))
+    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', padding='same', strides=[2, 2]))
     model.add(LeakyReLU())
     model.add(GlobalAveragePooling2D())
-    model.add(Dense(32, kernel_initializer='he_normal'))
+    model.add(Dense(1024, kernel_initializer='he_normal'))
     model.add(LeakyReLU())
     model.add(Dense(1, kernel_initializer='he_normal'))
     return model
@@ -355,7 +355,7 @@ minibatches_size = BATCH_SIZE * TRAINING_RATIO
 positive_y = np.ones((BATCH_SIZE, 1), dtype=np.float32)
 negative_y = -positive_y
 dummy_y = np.zeros((BATCH_SIZE, 1), dtype=np.float32)
-positive_y_generator_train = np.ones((minibatches_size, 1), dtype=np.float32)
+# positive_y_generator_train = np.ones((minibatches_size, 1), dtype=np.float32)
 for epoch in range(500):
     #np.random.shuffle(X_train)
     print("Epoch: ", epoch)
@@ -385,7 +385,7 @@ for epoch in range(500):
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch_y, image_batch],
                                                                          [positive_y, negative_y, dummy_y]))
             
-        generator_loss.append(generator_model.train_on_batch(X_train, positive_y_generator_train))
+        generator_loss.append(generator_model.train_on_batch(X_train[0:BATCH_SIZE], positive_y))
         
     # Still needs some code to display losses from the generator and discriminator, progress bars, etc.
     generate_images(generator, args.output_dir, epoch)
