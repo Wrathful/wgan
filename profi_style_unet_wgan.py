@@ -264,13 +264,14 @@ args = parser.parse_args()
 #     X_train = X_train.reshape((X_train.shape[0], 1, X_train.shape[1], X_train.shape[2]))
 # else:
 #     X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], X_train.shape[2], 1))
-X_train, y_train = gen.get_epoch(BATCH_SIZE)
 
-X_train = np.array(X_train)
-y_train = np.array(y_train)
-print(X_train.shape)
-X_train = (X_train.astype(np.float32) - 127.5) / 127.5
-y_train = (y_train.astype(np.float32) - 127.5) / 127.5
+# X_train, y_train = gen.get_epoch(BATCH_SIZE)
+
+# X_train = np.array(X_train)
+# y_train = np.array(y_train)
+# print(X_train.shape)
+# X_train = (X_train.astype(np.float32) - 127.5) / 127.5
+# y_train = (y_train.astype(np.float32) - 127.5) / 127.5
 
 # Now we initialize the generator and discriminator.
 generator = make_generator()
@@ -363,13 +364,13 @@ for epoch in range(300):
         y_train = (y_train.astype(np.float32) - 127.5) / 127.5
         print("X_train.shape")
         print(X_train.shape,y_train.shape)
-        discriminator_minibatches_x = X_train[i * minibatches_size:(i + 1) * minibatches_size]
-        discriminator_minibatches_y = y_train[i * minibatches_size:(i + 1) * minibatches_size]
-        print("discriminator_minibatches_x.shape")
-        print(discriminator_minibatches_x.shape,discriminator_minibatches_y.shape)
+        # discriminator_minibatches_x = X_train[0:(i + 1) * minibatches_size]
+        # discriminator_minibatches_y = y_train[i * minibatches_size:(i + 1) * minibatches_size]
+        # print("discriminator_minibatches_x.shape")
+        # print(discriminator_minibatches_x.shape,discriminator_minibatches_y.shape)
         for j in range(TRAINING_RATIO):
-            image_batch = discriminator_minibatches_x[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
-            image_batch_y = discriminator_minibatches_y[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
+            image_batch = X_train[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
+            image_batch_y = y_train[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             #noise = np.random.rand(BATCH_SIZE, 512,512,3).astype(np.float32)
             # print(noise.shape)
             print("image_batch.shape")
@@ -377,7 +378,7 @@ for epoch in range(300):
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch_y, image_batch],
                                                                          [positive_y, negative_y, dummy_y]))
             
-        generator_loss.append(generator_model.train_on_batch(discriminator_minibatches_x[0:minibatches_size], positive_y_generator_train))
+        generator_loss.append(generator_model.train_on_batch(X_train, positive_y_generator_train))
         
     # Still needs some code to display losses from the generator and discriminator, progress bars, etc.
     generate_images(generator, args.output_dir, epoch)
