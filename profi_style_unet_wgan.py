@@ -352,7 +352,7 @@ positive_y_generator_train = np.ones((minibatches_size, 1), dtype=np.float32)
 for epoch in range(500):
     #np.random.shuffle(X_train)
     print("Epoch: ", epoch)
-    print("Number of batches: ", int(X_train.shape[0] // BATCH_SIZE))
+    #print("Number of batches: ", int(X_train.shape[0] // BATCH_SIZE))
     discriminator_loss = []
     generator_loss = []
     
