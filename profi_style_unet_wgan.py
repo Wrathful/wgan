@@ -46,7 +46,7 @@ img_size=256
 BATCH_SIZE = 5
 TRAINING_RATIO = 2  # The training ratio is the number of discriminator updates per generator update. The paper uses 5.
 GRADIENT_PENALTY_WEIGHT = 10  # As per the paper
-gen = Gen('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','Y_validation', 1, img_size)
+gen = Gen('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','images/Y_validation', BATCH_SIZE*TRAINING_RATIO,1, img_size)
 path_model="wgan_weights.h5"
 
 
@@ -370,6 +370,14 @@ minibatches_size = BATCH_SIZE * TRAINING_RATIO
 positive_y = np.ones((BATCH_SIZE, 1), dtype=np.float32)
 negative_y = -positive_y
 dummy_y = np.zeros((BATCH_SIZE, 1), dtype=np.float32)
+
+def get_batch():
+    X_train, y_train = gen.get_train_batch(minibatches_size)
+    X_train = np.array(X_train)
+    y_train = np.array(y_train)
+    X_train = (X_train.astype(np.float32) - 127.5) / 127.5
+    y_train = (y_train.astype(np.float32) - 127.5) / 127.5
+    return X_train, y_train
 # positive_y_generator_train = np.ones((minibatches_size, 1), dtype=np.float32)
 for epoch in range(1000):
     #np.random.shuffle(X_train)
@@ -378,12 +386,10 @@ for epoch in range(1000):
     discriminator_loss = []
     generator_loss = []
     cur_time=time.time()
-    for i in range(int(len(gen.files) // (BATCH_SIZE * TRAINING_RATIO))):
-        X_train, y_train = gen.get_epoch(minibatches_size)
-        X_train = np.array(X_train)
-        y_train = np.array(y_train)
-        X_train = (X_train.astype(np.float32) - 127.5) / 127.5
-        y_train = (y_train.astype(np.float32) - 127.5) / 127.5
+    print(len(gen.train_batches))
+    print(len(gen.train_batches)*minibatches_size)
+    for i in range(int(len(gen.train_batches))):
+        X_train, y_train = get_batch()
         # print("X_train.shape")
         # print(X_train.shape,y_train.shape)
         # discriminator_minibatches_x = X_train[0:(i + 1) * minibatches_size]
