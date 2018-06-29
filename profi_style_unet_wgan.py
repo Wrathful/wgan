@@ -22,7 +22,7 @@ import os
 import numpy as np
 import keras
 import keras.layers as layers
-from train_gen import Gen
+from train_gen import Generator
 from keras.models import *
 from keras.layers import *
 from keras.models import Model, Sequential
@@ -46,7 +46,7 @@ img_size=256
 BATCH_SIZE = 5
 TRAINING_RATIO = 2  # The training ratio is the number of discriminator updates per generator update. The paper uses 5.
 GRADIENT_PENALTY_WEIGHT = 10  # As per the paper
-gen = Gen('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','images/Y_validation', BATCH_SIZE*TRAINING_RATIO,1, img_size)
+gen = Generator('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','images/Y_validation', BATCH_SIZE*TRAINING_RATIO,1, img_size)
 path_model="wgan_weights.h5"
 
 
@@ -399,10 +399,6 @@ for epoch in range(1000):
         for j in range(TRAINING_RATIO):
             image_batch = X_train[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             image_batch_y = y_train[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
-            #noise = np.random.rand(BATCH_SIZE, 512,512,3).astype(np.float32)
-            # print(noise.shape)
-            # print("image_batch.shape")
-            # print(image_batch.shape,image_batch_y.shape,positive_y.shape,negative_y.shape,dummy_y.shape)
             discriminator_loss.append(discriminator_model.train_on_batch([image_batch_y, image_batch],
                                                                          [positive_y, negative_y, dummy_y]))
             
