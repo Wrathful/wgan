@@ -230,8 +230,7 @@ def make_discriminator():
     x=Dropout(0.5)(x)
     # model.add(MaxPooling2D(pool_size=2,name="our_pool_3"))
     x=Flatten()(x)
-    print(x.get_shape())
-    
+    print(x.get_shape())    
     x=Dense(256, kernel_initializer='he_normal',name="our_dense_1")(x)
     print(x.get_shape())
     x=LeakyReLU()(x)
@@ -301,8 +300,6 @@ args = parser.parse_args()
 # Now we initialize the generator and discriminator.
 generator = make_generator()
 discriminator = make_discriminator()
-for layer in discriminator.layers:
-    print(layer.get_shape())
 # The generator_model is used when we want to train the generator layers.
 # As such, we ensure that the discriminator layers are not trainable.
 # Note that once we compile this model, updating .trainable will have no effect within it. As such, it
