@@ -47,6 +47,9 @@ BATCH_SIZE = 5
 TRAINING_RATIO = 2  # The training ratio is the number of discriminator updates per generator update. The paper uses 5.
 GRADIENT_PENALTY_WEIGHT = 10  # As per the paper
 gen = Gen('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','Y_validation', 1, img_size)
+path_model="wgan_weights.h5"
+
+
 
 def wasserstein_loss(y_true, y_pred):
     """Calculates the Wasserstein loss for a sample batch.
@@ -404,3 +407,4 @@ for epoch in range(1000):
     print("generator_loss="+str(generator_loss[-1]))
     print("discriminator_loss="+str(discriminator_loss[-1]))
     print("time="+str(time.time()-cur_time))
+    generator_model.save_weights(path_model)
