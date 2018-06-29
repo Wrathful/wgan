@@ -372,7 +372,7 @@ negative_y = -positive_y
 dummy_y = np.zeros((BATCH_SIZE, 1), dtype=np.float32)
 
 def get_batch():
-    X_train, y_train = gen.get_train_batch(minibatches_size)
+    X_train, y_train = gen.get_train_batch()
     X_train = np.array(X_train)
     y_train = np.array(y_train)
     X_train = (X_train.astype(np.float32) - 127.5) / 127.5
