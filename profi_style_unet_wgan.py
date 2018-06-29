@@ -260,7 +260,7 @@ class RandomWeightedAverage(_Merge):
 
 def generate_images(generator_model, output_dir, epoch):
     """Feeds random seeds into the generator and tiles and saves the output to a PNG file."""
-    image_y=np.array(gen.get_test())
+    image_y=np.array(gen.get_test_batch())
     # print(image_y.shape)
     test_image_stack = generator_model.predict(image_y)
     test_image_stack = (test_image_stack * 127.5) + 127.5
@@ -386,8 +386,6 @@ for epoch in range(1000):
     discriminator_loss = []
     generator_loss = []
     cur_time=time.time()
-    print(len(gen.train_batches))
-    print(len(gen.train_batches)*minibatches_size)
     for i in range(int(len(gen.train_batches))):
         X_train, y_train = get_batch()
         # print("X_train.shape")
