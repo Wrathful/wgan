@@ -222,17 +222,13 @@ def make_discriminator():
     x=LeakyReLU()(x)
     x=MaxPooling2D(pool_size=2,name="our_pool_2")(x)
     x=Convolution2D(256, (3, 3), kernel_initializer='he_normal', strides=[2, 2],name="our_conv_5")(x)
-    print(x.get_shape())
     x=LeakyReLU()(x) 
     x=Convolution2D(256, (2, 2), kernel_initializer='he_normal', strides=[2, 2],name="our_conv_6")(x)
-    print(x.get_shape())
     x=LeakyReLU()(x)   
     x=Dropout(0.5)(x)
     # model.add(MaxPooling2D(pool_size=2,name="our_pool_3"))
-    x=Flatten()(x)
-    print(x.get_shape())    
+    x=Flatten()(x)   
     x=Dense(256, kernel_initializer='he_normal',name="our_dense_1")(x)
-    print(x.get_shape())
     x=LeakyReLU()(x)
     x=Dense(1, kernel_initializer='he_normal',name="our_dense_2")(x)
     model = Model(inputs=inputs, outputs=x)
@@ -394,7 +390,6 @@ for epoch in range(1000):
         for j in range(TRAINING_RATIO):
             image_batch = X_train[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             image_batch_y = y_train[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
-            print(image_batch_y.shape)
             #noise = np.random.rand(BATCH_SIZE, 512,512,3).astype(np.float32)
             # print(noise.shape)
             # print("image_batch.shape")
