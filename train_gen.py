@@ -34,7 +34,6 @@ class Gen:
 			for i in range(batch_size):
 				X = cv2.resize(cv2.imread(self.x_folder + self.files[self.j * batch_size + i][1]),(self.input_size,self.input_size))
 				Y = cv2.resize(cv2.imread(self.y_folder + self.files[self.j * batch_size + i][0]),(self.input_size,self.input_size))
-				cv2.resize(cv2.imread(files[i]), (512, 512))
 				x_batch.append(X)
 				y_batch.append(Y)
 			self.j +=1
