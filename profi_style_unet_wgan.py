@@ -221,17 +221,13 @@ def make_discriminator():
     model.add(LeakyReLU())
     model.add(MaxPooling2D(pool_size=2,name="our_pool_2"))
     model.add(Convolution2D(256, (3, 3), kernel_initializer='he_normal', strides=[2, 2],name="our_conv_5"))
-    print(model.layers[-1].get_shape())
     model.add(LeakyReLU())    
     model.add(Convolution2D(256, (2, 2), kernel_initializer='he_normal', strides=[2, 2],name="our_conv_6"))
-    print(model.layers[-1].get_shape())
     model.add(LeakyReLU())    
     model.add(Dropout(0.5))
     # model.add(MaxPooling2D(pool_size=2,name="our_pool_3"))
     model.add(Flatten())
-    print(model.layers[-1].get_shape())
     model.add(Flatten())
-    print(model.layers[-1].get_shape())
     model.add(Dense(256, kernel_initializer='he_normal',name="our_dense_1"))
     model.add(LeakyReLU())
     model.add(Dense(1, kernel_initializer='he_normal',name="our_dense_2"))
@@ -299,7 +295,8 @@ args = parser.parse_args()
 # Now we initialize the generator and discriminator.
 generator = make_generator()
 discriminator = make_discriminator()
-
+for layer in discriminator.layers:
+    print(layer.get_shape())
 # The generator_model is used when we want to train the generator layers.
 # As such, we ensure that the discriminator layers are not trainable.
 # Note that once we compile this model, updating .trainable will have no effect within it. As such, it
