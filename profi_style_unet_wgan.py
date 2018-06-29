@@ -15,6 +15,7 @@ tested this with Theano at all.
 
 The model saves images using pillow. If you don't have pillow, either install it or remove the calls to generate_images.
 """
+import time
 import cv2
 import argparse
 import os
@@ -224,7 +225,8 @@ def make_discriminator():
     
     model.add(Convolution2D(256, (2, 2), kernel_initializer='he_normal', strides=[2, 2],name="our_conv_6"))
     model.add(LeakyReLU())
-    model.add(MaxPooling2D(pool_size=2,name="our_pool_3"))
+    model.add(Dropout(0.5))
+    # model.add(MaxPooling2D(pool_size=2,name="our_pool_3"))
     model.add(Flatten())
     model.add(Dense(256, kernel_initializer='he_normal'))
     model.add(LeakyReLU())
@@ -372,7 +374,7 @@ for epoch in range(500):
     #print("Number of batches: ", int(X_train.shape[0] // BATCH_SIZE))
     discriminator_loss = []
     generator_loss = []
-    
+    cur_time=time.time()
     for i in range(int(len(gen.files) // (BATCH_SIZE * TRAINING_RATIO))):
         X_train, y_train = gen.get_epoch(minibatches_size)
         X_train = np.array(X_train)
@@ -401,3 +403,4 @@ for epoch in range(500):
     generate_images(generator, args.output_dir, epoch)
     print("generator_loss="+str(generator_loss[-1]))
     print("discriminator_loss="+str(discriminator_loss[-1]))
+    print("time="+str(time.time()-cur_time))
