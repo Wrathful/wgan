@@ -40,7 +40,7 @@ try:
 except ImportError:
     print('This script depends on pillow! Please install it (e.g. with pip install pillow)')
     exit()
-
+image_shape=(256,256,3)
 BATCH_SIZE = 5
 TRAINING_RATIO = 2  # The training ratio is the number of discriminator updates per generator update. The paper uses 5.
 GRADIENT_PENALTY_WEIGHT = 10  # As per the paper
@@ -117,7 +117,7 @@ def make_generator():
     """Creates a generator model that takes a 100-dimensional noise vector as a "seed", and outputs images
     of size 28x28x1."""
     concat_axis = 3
-    inputs = layers.Input(shape = (512,512,3))
+    inputs = layers.Input(shape = image_shape)
 
     conv1 = layers.Conv2D(32, (3, 3), activation='relu', padding='same', name='conv1_1')(inputs)
     conv1 = layers.Conv2D(32, (3, 3), activation='relu', padding='same')(conv1)
@@ -210,13 +210,22 @@ def make_discriminator():
         model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(3, 512, 512)))
     else:
         model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(512, 512, 3)))
+    model.add(Convolution2D(64, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
+    model.add(MaxPooling2D(pool_size=2))
     model.add(LeakyReLU())
     model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(LeakyReLU())
-    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', padding='same', strides=[2, 2]))
+    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(LeakyReLU())
-    model.add(GlobalAveragePooling2D())
-    model.add(Dense(1024, kernel_initializer='he_normal'))
+    model.add(MaxPooling2D(pool_size=2))
+    model.add(Convolution2D(256, (3, 3), kernel_initializer='he_normal', strides=[2, 2]))
+    model.add(LeakyReLU())
+    
+    model.add(Convolution2D(256, (3, 3), kernel_initializer='he_normal', strides=[2, 2]))
+    model.add(LeakyReLU())
+    model.add(MaxPooling2D(pool_size=2))
+    model.add(Flatten())
+    model.add(Dense(256, kernel_initializer='he_normal'))
     model.add(LeakyReLU())
     model.add(Dense(1, kernel_initializer='he_normal'))
     return model
@@ -292,7 +301,7 @@ discriminator = make_discriminator()
 for layer in discriminator.layers:
     layer.trainable = False
 discriminator.trainable = False
-generator_input = Input(shape=(512,512,3))
+generator_input = Input(shape=image_shape)
 generator_layers = generator(generator_input)
 discriminator_layers_for_generator = discriminator(generator_layers)
 generator_model = Model(inputs=[generator_input], outputs=[discriminator_layers_for_generator])
@@ -311,8 +320,8 @@ generator.trainable = False
 # The noise seed is run through the generator model to get generated images. Both real and generated images
 # are then run through the discriminator. Although we could concatenate the real and generated images into a
 # single tensor, we don't (see model compilation for why).
-real_samples = Input(shape=(512,512,3))
-generator_input_for_discriminator = Input(shape=(512,512,3))
+real_samples = Input(shape=image_shape)
+generator_input_for_discriminator = Input(shape=image_shape)
 generated_samples_for_discriminator = generator(generator_input_for_discriminator)
 discriminator_output_from_generator = discriminator(generated_samples_for_discriminator)
 discriminator_output_from_real_samples = discriminator(real_samples)
