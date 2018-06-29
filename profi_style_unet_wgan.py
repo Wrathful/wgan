@@ -41,10 +41,11 @@ except ImportError:
     print('This script depends on pillow! Please install it (e.g. with pip install pillow)')
     exit()
 image_shape=(256,256,3)
+img_size=256
 BATCH_SIZE = 5
 TRAINING_RATIO = 2  # The training ratio is the number of discriminator updates per generator update. The paper uses 5.
 GRADIENT_PENALTY_WEIGHT = 10  # As per the paper
-gen = Gen('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','images/Y', 1, 512)
+gen = Gen('images/kak_ygodno.txt', 'images/X/', 'images/new_Y/','Y_validation', 1, img_size)
 
 def wasserstein_loss(y_true, y_pred):
     """Calculates the Wasserstein loss for a sample batch.
@@ -207,15 +208,15 @@ def make_discriminator():
     Note that the improved WGAN paper suggests that BatchNormalization should not be used in the discriminator."""
     model = Sequential()
     if K.image_data_format() == 'channels_first':
-        model.add(Convolution2D(64, (4, 4), input_shape=(3, 512, 512)))
+        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(3, 512, 512)))
     else:
-        model.add(Convolution2D(64, (4, 4), input_shape=(512, 512, 3)))
-    model.add(Convolution2D(64, (4, 4), kernel_initializer='he_normal', strides=[2, 2]))
+        model.add(Convolution2D(64, (5, 5), padding='same', input_shape=(512, 512, 3)))
+    model.add(Convolution2D(64, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(MaxPooling2D(pool_size=2))
     model.add(LeakyReLU())
-    model.add(Convolution2D(128, (4, 4), kernel_initializer='he_normal', strides=[2, 2]))
+    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(LeakyReLU())
-    model.add(Convolution2D(128, (4, 4), kernel_initializer='he_normal', strides=[2, 2]))
+    model.add(Convolution2D(128, (5, 5), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(LeakyReLU())
     model.add(MaxPooling2D(pool_size=2))
     model.add(Convolution2D(256, (3, 3), kernel_initializer='he_normal', strides=[2, 2]))
@@ -223,7 +224,7 @@ def make_discriminator():
     
     model.add(Convolution2D(256, (3, 3), kernel_initializer='he_normal', strides=[2, 2]))
     model.add(LeakyReLU())
-    model.add(MaxPooling2D(pool_size=3))
+    model.add(MaxPooling2D(pool_size=2))
     model.add(Flatten())
     model.add(Dense(256, kernel_initializer='he_normal'))
     model.add(LeakyReLU())
