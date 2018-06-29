@@ -372,7 +372,7 @@ positive_y = np.ones((BATCH_SIZE, 1), dtype=np.float32)
 negative_y = -positive_y
 dummy_y = np.zeros((BATCH_SIZE, 1), dtype=np.float32)
 # positive_y_generator_train = np.ones((minibatches_size, 1), dtype=np.float32)
-for epoch in range(500):
+for epoch in range(1000):
     #np.random.shuffle(X_train)
     print("Epoch: ", epoch)
     #print("Number of batches: ", int(X_train.shape[0] // BATCH_SIZE))
@@ -394,6 +394,7 @@ for epoch in range(500):
         for j in range(TRAINING_RATIO):
             image_batch = X_train[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
             image_batch_y = y_train[j * BATCH_SIZE:(j + 1) * BATCH_SIZE]
+            print(image_batch_y.shape)
             #noise = np.random.rand(BATCH_SIZE, 512,512,3).astype(np.float32)
             # print(noise.shape)
             # print("image_batch.shape")

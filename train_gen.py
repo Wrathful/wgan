@@ -32,14 +32,12 @@ class Gen:
 
 		if is_training:
 			for i in range(batch_size):
-				X = cv2.imread(self.x_folder + self.files[self.j * batch_size + i][1])
-				Y = cv2.imread(self.y_folder + self.files[self.j * batch_size + i][0])
+				X = cv2.resize(cv2.imread(self.x_folder + self.files[self.j * batch_size + i][1]),(self.input_size,self.input_size))
+				Y = cv2.resize(cv2.imread(self.y_folder + self.files[self.j * batch_size + i][0]),(self.input_size,self.input_size))
+				cv2.resize(cv2.imread(files[i]), (512, 512))
 				x_batch.append(X)
 				y_batch.append(Y)
 			self.j +=1
-			# print(self.j)
-			# print(x_batch)
-			# print(y_batch)
 			if self.j >= len(self.files) // batch_size:
 				self.j=0
 		else:
@@ -66,7 +64,7 @@ class Gen:
 		# print(files)
 		images = [None] * len(files)
 		for i in range(len(files)):
-			images[i] = cv2.resize(cv2.imread(files[i]), (512, 512))
+			images[i] = cv2.resize(cv2.imread(files[i]), (self.input_size,self.input_size))
 
 		return images
 #gen = Gen('kak_ygodno.txt', 'images/X/', 'images/Y/', 80, 256)
