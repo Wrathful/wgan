@@ -224,7 +224,7 @@ def make_discriminator():
     
     model.add(Convolution2D(256, (3, 3), kernel_initializer='he_normal', strides=[2, 2],name="our_conv_6"))
     model.add(LeakyReLU())
-    model.add(MaxPooling2D(pool_size=2),name="our_pool_3")
+    model.add(MaxPooling2D(pool_size=2,name="our_pool_3"))
     model.add(Flatten())
     model.add(Dense(256, kernel_initializer='he_normal'))
     model.add(LeakyReLU())
