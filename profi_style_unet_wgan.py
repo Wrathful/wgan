@@ -228,9 +228,9 @@ def make_discriminator():
     model.add(Dropout(0.5))
     # model.add(MaxPooling2D(pool_size=2,name="our_pool_3"))
     model.add(Flatten())
-    model.add(Dense(256, kernel_initializer='he_normal'))
+    model.add(Dense(256, kernel_initializer='he_normal',name="our_dense_1"))
     model.add(LeakyReLU())
-    model.add(Dense(1, kernel_initializer='he_normal'))
+    model.add(Dense(1, kernel_initializer='he_normal',name="our_dense_2"))
     return model
 
 
